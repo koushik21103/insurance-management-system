@@ -2,31 +2,34 @@ package com.insurance.insurance_management.service;
 
 import com.insurance.insurance_management.model.Claim;
 import com.insurance.insurance_management.repository.ClaimRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ClaimService {
 
-    @Autowired
-    private ClaimRepository claimRepository;
+    private final ClaimRepository claimRepository;
 
-    public Claim saveClaim(Claim claim) {
+    public Claim save(Claim claim) {
         return claimRepository.save(claim);
     }
 
-    public List<Claim> getAllClaims() {
+    public List<Claim> getAll() {
         return claimRepository.findAll();
     }
 
-    public Optional<Claim> getClaimById(Long id) {
+    public Optional<Claim> getById(Long id) {
         return claimRepository.findById(id);
     }
 
-    public void deleteClaim(Long id) {
+    public void delete(Long id) {
         claimRepository.deleteById(id);
     }
 }
+

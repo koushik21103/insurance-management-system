@@ -2,31 +2,34 @@ package com.insurance.insurance_management.service;
 
 import com.insurance.insurance_management.model.Agent;
 import com.insurance.insurance_management.repository.AgentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AgentService {
 
-    @Autowired
-    private AgentRepository agentRepository;
+    private final AgentRepository agentRepository;
 
-    public Agent saveAgent(Agent agent) {
+    public Agent save(Agent agent) {
         return agentRepository.save(agent);
     }
 
-    public List<Agent> getAllAgents() {
+    public List<Agent> getAll() {
         return agentRepository.findAll();
     }
 
-    public Optional<Agent> getAgentById(Long id) {
+    public Optional<Agent> getById(Long id) {
         return agentRepository.findById(id);
     }
 
-    public void deleteAgent(Long id) {
+    public void delete(Long id) {
         agentRepository.deleteById(id);
     }
 }
+

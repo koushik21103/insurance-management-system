@@ -2,6 +2,7 @@ package com.insurance.insurance_management.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.*;
 
 @Entity
 @Data
@@ -16,5 +17,7 @@ public class Agent {
 
     private String name;
     private String contactInfo;
-}
 
+    @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Policy> policies = new ArrayList<>();
+}

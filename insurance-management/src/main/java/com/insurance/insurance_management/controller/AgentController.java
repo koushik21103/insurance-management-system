@@ -2,53 +2,49 @@ package com.insurance.insurance_management.controller;
 
 import com.insurance.insurance_management.model.Agent;
 import com.insurance.insurance_management.service.AgentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/agents")
+@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 public class AgentController {
 
-    @Autowired
-    private AgentService agentService;
+    private final AgentService agentService;
 
     @PostMapping
-    public ResponseEntity<Agent> createAgent(@RequestBody Agent agent) {
-        Agent savedAgent = agentService.saveAgent(agent);
-        return ResponseEntity.ok(savedAgent);
+    public ResponseEntity<Agent> create(@RequestBody Agent agent) {
+        return ResponseEntity.ok(agentService.save(agent));
     }
 
     @GetMapping
-    public ResponseEntity<List<Agent>> getAllAgents() {
-        return ResponseEntity.ok(agentService.getAllAgents());
+    public ResponseEntity<List<Agent>> getAll() {
+        return ResponseEntity.ok(agentService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Agent> getAgentById(@PathVariable Long id) {
-        return agentService.getAgentById(id)
+    public ResponseEntity<Agent> getById(@PathVariable Long id) {
+        return agentService.getById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Agent> updateAgent(@PathVariable Long id, @RequestBody Agent updatedAgent) {
-        return agentService.getAgentById(id)
-                .map(existingAgent -> {
-                    existingAgent.setName(updatedAgent.getName());
-                    existingAgent.setContactInfo(updatedAgent.getContactInfo());
-                    Agent saved = agentService.saveAgent(existingAgent);
-                    return ResponseEntity.ok(saved);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Agent> update(@PathVariable Long id, @RequestBody Agent updated) {
+        return agentService.getById(id)
+                .map(existing -> {
+                    existing.setName(updated.getName());
+                    existing.setContactInfo(updated.getContactInfo());
+                    return ResponseEntity.ok(agentService.save(existing));
+                }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAgent(@PathVariable Long id) {
-        agentService.deleteAgent(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        agentService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

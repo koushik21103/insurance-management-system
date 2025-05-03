@@ -2,35 +2,35 @@ package com.insurance.insurance_management.service;
 
 import com.insurance.insurance_management.model.Customer;
 import com.insurance.insurance_management.repository.CustomerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerService {
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
-    // Create or Update Customer
-    public Customer saveCustomer(Customer customer) {
+    public Customer save(Customer customer) {
         return customerRepository.save(customer);
     }
 
-    // Get All Customers
-    public List<Customer> getAllCustomers() {
+    public List<Customer> getAll() {
         return customerRepository.findAll();
     }
 
-    // Get Customer by ID
-    public Optional<Customer> getCustomerById(Long id) {
+    public Optional<Customer> getById(Long id) {
         return customerRepository.findById(id);
     }
 
-    // Delete Customer by ID
-    public void deleteCustomer(Long id) {
+    public void delete(Long id) {
         customerRepository.deleteById(id);
     }
 }
+
+

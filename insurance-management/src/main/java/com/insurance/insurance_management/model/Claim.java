@@ -14,8 +14,6 @@ public class Claim {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long claimId;
 
-    private Long policyId;
-    private Long customerId;
     private Double claimAmount;
 
     @Enumerated(EnumType.STRING)
@@ -24,5 +22,12 @@ public class Claim {
     public enum Status {
         FILED, UNDER_REVIEW, APPROVED, REJECTED
     }
-}
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "policy_id")
+    private Policy policy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+}

@@ -2,7 +2,9 @@ package com.insurance.insurance_management.controller;
 
 import com.insurance.insurance_management.model.Customer;
 import com.insurance.insurance_management.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,53 +12,45 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/customers")
-@CrossOrigin(origins = "http://localhost:3000")  // Allow React Frontend (Optional for development)
+@RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class CustomerController {
 
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
-    // Create Customer
     @PostMapping
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
-        Customer savedCustomer = customerService.saveCustomer(customer);
-        return ResponseEntity.ok(savedCustomer);
+    public ResponseEntity<Customer> create(@RequestBody Customer customer) {
+        return ResponseEntity.ok(customerService.save(customer));
     }
 
-    // Get All Customers
     @GetMapping
-    public ResponseEntity<List<Customer>> getAllCustomers() {
-        List<Customer> customers = customerService.getAllCustomers();
-        return ResponseEntity.ok(customers);
+    public ResponseEntity<List<Customer>> getAll() {
+        return ResponseEntity.ok(customerService.getAll());
     }
 
-    // Get Customer by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
-        return customerService.getCustomerById(id)
+    public ResponseEntity<Customer> getById(@PathVariable Long id) {
+        return customerService.getById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Update Customer
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody Customer updatedCustomer) {
-        return customerService.getCustomerById(id)
-                .map(existingCustomer -> {
-                    existingCustomer.setName(updatedCustomer.getName());
-                    existingCustomer.setEmail(updatedCustomer.getEmail());
-                    existingCustomer.setPhone(updatedCustomer.getPhone());
-                    existingCustomer.setAddress(updatedCustomer.getAddress());
-                    Customer saved = customerService.saveCustomer(existingCustomer);
-                    return ResponseEntity.ok(saved);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Customer> update(@PathVariable Long id, @RequestBody Customer updated) {
+        return customerService.getById(id)
+                .map(existing -> {
+                    existing.setName(updated.getName());
+                    existing.setEmail(updated.getEmail());
+                    existing.setPhone(updated.getPhone());
+                    existing.setAddress(updated.getAddress());
+                    return ResponseEntity.ok(customerService.save(existing));
+                }).orElse(ResponseEntity.notFound().build());
     }
 
-    // Delete Customer
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
-        customerService.deleteCustomer(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        customerService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
+

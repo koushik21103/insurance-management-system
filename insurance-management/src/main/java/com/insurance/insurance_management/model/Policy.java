@@ -2,6 +2,7 @@ package com.insurance.insurance_management.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.*;
 
 @Entity
 @Data
@@ -19,8 +20,14 @@ public class Policy {
     private String coverageDetails;
     private String validityPeriod;
 
-    // Linking Policy to Customer and Agent (optional if needed later)
-    private Long customerId;
-    private Long agentId;
-}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agent_id")
+    private Agent agent;
+
+    @OneToMany(mappedBy = "policy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Claim> claims = new ArrayList<>();
+}

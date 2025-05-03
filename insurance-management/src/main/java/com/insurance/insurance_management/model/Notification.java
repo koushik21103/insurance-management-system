@@ -14,10 +14,11 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notificationId;
 
-    private Long customerId;
     private String message;
-    private String notificationType;  // E.g., POLICY_RENEWAL, CLAIM_STATUS, etc.
-
+    private String notificationType;
     private Boolean isRead = false;
-}
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+}

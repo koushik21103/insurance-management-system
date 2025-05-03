@@ -2,54 +2,51 @@ package com.insurance.insurance_management.controller;
 
 import com.insurance.insurance_management.model.Notification;
 import com.insurance.insurance_management.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/notifications")
+@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 public class NotificationController {
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @PostMapping
-    public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
-        Notification savedNotification = notificationService.saveNotification(notification);
-        return ResponseEntity.ok(savedNotification);
+    public ResponseEntity<Notification> create(@RequestBody Notification notification) {
+        return ResponseEntity.ok(notificationService.save(notification));
     }
 
     @GetMapping
-    public ResponseEntity<List<Notification>> getAllNotifications() {
-        return ResponseEntity.ok(notificationService.getAllNotifications());
+    public ResponseEntity<List<Notification>> getAll() {
+        return ResponseEntity.ok(notificationService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Notification> getNotificationById(@PathVariable Long id) {
-        return notificationService.getNotificationById(id)
+    public ResponseEntity<Notification> getById(@PathVariable Long id) {
+        return notificationService.getById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Notification> updateNotification(@PathVariable Long id, @RequestBody Notification updatedNotification) {
-        return notificationService.getNotificationById(id)
-                .map(existingNotification -> {
-                    existingNotification.setMessage(updatedNotification.getMessage());
-                    existingNotification.setNotificationType(updatedNotification.getNotificationType());
-                    existingNotification.setIsRead(updatedNotification.getIsRead());
-                    Notification saved = notificationService.saveNotification(existingNotification);
-                    return ResponseEntity.ok(saved);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Notification> update(@PathVariable Long id, @RequestBody Notification updated) {
+        return notificationService.getById(id)
+                .map(existing -> {
+                    existing.setMessage(updated.getMessage());
+                    existing.setNotificationType(updated.getNotificationType());
+                    existing.setIsRead(updated.getIsRead());
+                    existing.setCustomer(updated.getCustomer());
+                    return ResponseEntity.ok(notificationService.save(existing));
+                }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNotification(@PathVariable Long id) {
-        notificationService.deleteNotification(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        notificationService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
